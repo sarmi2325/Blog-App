@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, FileField, SubmitField
 from wtforms.validators import DataRequired, Optional
 from flask_wtf.file import FileAllowed
-from flask_ckeditor import CKEditorField
+
 
 #define post form
 class PostForm(FlaskForm):
