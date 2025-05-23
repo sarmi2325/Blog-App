@@ -15,16 +15,14 @@ login_manager = LoginManager()
 def create_app():
     # Create Flask application instance with static folder configuration
     app = Flask(__name__, static_folder='static')
-    
+    app.config.from_object(Config)
     # Configure application settings
-    secret_key = os.getenv('SECRET_KEY')
+    
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path,'static', 'uploads')
     
     
-    # Google OAuth setup
-    GOOGLE_OAUTH_CLIENT_ID = os.getenv('CLIENT_ID')
-    GOOGLE_OAUTH_CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+   
     # Initialize Flask extensions with the app
     db.init_app(app)
     login_manager.init_app(app)
