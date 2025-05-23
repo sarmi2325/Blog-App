@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #87cefa, #ffc0cb);
+            min-height: 100vh;
+            color: #2e003e;
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+        }
+
+        .create-post {
+            padding: 10px 20px;
+            background-color: #c27cff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.3s ease;
+        }
+
+        .create-post:hover {
+            background-color: #080808;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        p.subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #fce4ff;
+            margin-bottom: 30px;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: transform 0.2s ease;
+            overflow: hidden; 
+        }
+
+        .post-card:hover {
+            transform: scale(1.01);
+        }
+
+        .post-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #4a006e;
+            margin-bottom: 10px;
+        }
+
+        .post-meta {
+            font-size: 14px;
+            color: #7a3f8b;
+            margin-bottom: 15px;
+        }
+
+        .post-content {
+            font-size: 16px;
+            color: #350041;
+            line-height: 1.6;
+        }
+
+        .read-more,
+        
+        .delete {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background-color: #ff88d4;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .read-more:hover,
+        
+        .delete:hover {
+            background-color: #090909;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .actions a {
+            margin: 0 10px;
+            padding: 12px 28px;
+            background-color: #c27cff;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: background 0.3s ease;
+        }
+
+        .actions a:hover {
+            background-color: #080808;
+        }
+
+        .visibility-badge {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: #ffe0fb;
+            color: #6d006d;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 250px;
+            margin-right: 10px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #c27cff;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #080808;
+        }
+        .post-image {
+    max-width: 100%;
+    max-height: 250px;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 15px;
+    object-fit: contain;
+}
+
+    </style>
+</head>
+<body>
+
+    <h2>SCRIPTUM</h2>
+    <p class="subtitle">“Today Typed, Tomorrow Remembered”</p>
+
+    <div class="top-actions" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+
+        <!-- Search Bar -->
+        <form method="GET" action="{{ url_for('main.dashboard') }}" style="display: flex; gap: 10px; flex-grow: 1; max-width: 450px;">
+            <input type="text" name="q" placeholder="Search by text, public or private..."
+                   style="padding: 10px 15px; border-radius: 8px; border: none; flex-grow: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.1); font-family: 'Poppins', sans-serif;">
+            <button type="submit" style="padding: 10px 20px; background-color: #c27cff; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                Search
+            </button>
+        </form>
+    
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ url_for('blog.public_posts') }}" class="create-post">🌐 Public Posts</a>
+            <a href="{{ url_for('blog.create_post') }}" class="create-post">+ New Post</a>
+            <a href="{{ url_for('auth.logout') }}" class="create-post">Logout</a>
+            
+        </div>
+    </div>
+    
+    
+
+    {% for post in posts %}
+    <div class="post-card">
+        <!-- Visibility Badge -->
+        <div class="visibility-badge">
+            {{ 'Public' if post.is_public else 'Private' }}
+        </div>
+        
+        <div class="post-title">{{ post.title }}</div>
+        <div class="post-meta">Posted on: {{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</div>
+        
+        <a class="read-more" href="{{ url_for('blog.post', post_id=post.id) }}">Read More</a>
+        
+        <a class="delete" href="{{ url_for('blog.delete', post_id=post.id) }}">Delete</a>
+    </div>
+    
+    {% endfor %}
+
+ 
+
+</body>
+</html>
+

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Create Post</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CKEditor 5 CDN -->
+    <script src="https://cdn.tiny.cloud/1/hvzwe2lo2eecy1p86bfpmmk3dz473iipk18b4f4kloauuvfk/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #FCF6F5, #EDC2D8, #8ABAD3); /* Soft pastel gradient */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #4a4a4a; /* Dark gray for text */
+        }
+
+        h2 {
+            color: #5D5A66; /* Soft muted gray */
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1); /* Light shadow */
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
+            backdrop-filter: blur(10px);
+            border: 1px solid #d8b6c3; /* Soft pinkish border */
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #D3A5C7;
+            border-radius: 8px;
+            background-color: #F9F4F5; /* Very pale pink */
+            font-size: 16px;
+            transition: border 0.3s ease-in-out;
+        }
+
+        input[type="text"]:focus, textarea:focus, input[type="file"]:focus, select:focus {
+            border-color: #C89EC4;
+            background-color: #F4E1EA;
+        }
+
+        /* Custom style for the create button */
+        .btn-create {
+            width: 100%;
+            padding: 12px;
+            background-color: #5090b3; /* Blue color */
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            font-size: 16px;
+        }
+
+        .btn-create:hover {
+            background-color: #0077b6; /* Darker blue */
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            color: #5D5A66;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            margin-top: 20px;
+            padding-left: 20px;
+            color: #5D5A66;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .image-preview {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Styled visibility dropdown */
+        select {
+            appearance: none;
+            background-color: #F9F4F5;
+            border-radius: 8px;
+            background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5H7z%22/%3E%3C/svg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Create a New Post</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        <label for="title">{{ form.title.label }}</label>
+        {{ form.title() }}
+
+        <label for="content">{{ form.content.label|safe }}</label>
+        <textarea name="content" id="content" rows="10" cols="80"></textarea>  <!-- This will be replaced by CKEditor -->
+
+        <label for="link">{{ form.link.label }}</label>
+        {{ form.link() }}
+
+        <label for="is_public">{{ form.is_public.label }}</label>
+        {{ form.is_public(class="styled-dropdown") }} <!-- Visibility dropdown -->
+
+        <label for="image">{{ form.image.label }}</label>
+        {{ form.image(onchange="previewImage(event)") }}
+
+        <div class="image-preview" id="imagePreview"></div>
+
+        <!-- Custom button class applied -->
+        <button type="submit" class="btn-create">Create Post</button>
+    </form>
+
+    <a href="{{ url_for('main.dashboard') }}">← Back to Dashboard</a>
+    <script>
+        tinymce.init({
+          selector: 'textarea#content',
+          plugins: 'image code media',  // Add 'media' here
+          toolbar: 'undo redo | link image media | code',
+          branding: false,
+          automatic_uploads: true,
+          file_picker_types: 'image',
+      
+          // Optional: to explicitly specify a script source (if needed)
+          // tinymceScriptSrc: '/path/to/tinymce.min.js',
+      
+          images_upload_handler: function (blobInfo, success, failure) {
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+      
+            fetch('/upload_image', {
+              method: 'POST',
+              body: formData
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('HTTP status ' + response.status);
+              }
+              return response.json();
+            })
+            .then(json => {
+              if (json.location) {
+                success(json.location);
+              } else {
+                failure('Image upload failed: No location in response');
+              }
+            })
+            .catch(error => {
+              console.error('Upload error:', error);
+              if (typeof failure === 'function') {
+                failure('HTTP Error during upload: ' + error.message);
+              }
+            });
+          }
+        });
+      </script>
+      
+        
+</body>
+</html>
+
+
+
+
+    

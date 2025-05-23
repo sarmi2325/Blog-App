@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f4c2c2, #afeeee);
+            background-size: 200% 200%;
+            animation: flow 20s ease infinite;
+            color: #3b2f42;
+        }
+
+        @keyframes flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.75);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #50365d;
+            margin-bottom: 10px;
+        }
+
+        .meta {
+            font-size: 14px;
+            color: #6f5a72;
+            margin-bottom: 25px;
+        }
+
+        .content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #3f2c3e;
+        }
+
+        .image {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            background-color: #d49ac5;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #0e0c0e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ post.title }}</h1>
+        <div class="meta">Posted on {{ post.date_posted.strftime('%B %d, %Y') }}</div>
+
+        {% if post.image_url %}
+        <div class="image">
+            <img src="{{ url_for('static', filename=post.image_url) }}" alt="Post Image">
+        </div>
+        {% endif %}
+
+        <div class="content">
+            {{ post.content|safe }}
+        </div>
+
+        {% if post.link %}
+            <p><a href="{{ post.link }}" target="_blank">🔗 Related Link</a></p>
+        {% endif %}
+
+        <a class="back-link" href="{{ url_for('main.dashboard') }}">← Back to Dashboard</a>
+    </div>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Public Posts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #87cefa, #ffc0cb);
+            min-height: 100vh;
+            color: #2e003e;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        p.subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #fce4ff;
+            margin-bottom: 30px;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .post-card:hover {
+            transform: scale(1.01);
+        }
+
+        .post-title {
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            color: #4a006e;
+            margin-bottom: 5px;
+        }
+
+        .post-meta {
+            font-size: 14px;
+            text-align: center;
+            font-style: italic;
+            color: #7a3f8b;
+            margin-bottom: 10px;
+        }
+
+        .post-stats {
+            text-align: center;
+            font-size: 14px;
+            color: #5e2e71;
+            margin-bottom: 10px;
+        }
+
+        .post-image {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .post-content {
+            font-size: 16px;
+            color: #350041;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .read-more {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff88d4;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            display: block;
+            text-align: center;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .read-more:hover {
+            background-color: #090909;
+        }
+       
+        
+
+
+        .like-form {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .like-form button {
+            background: none;
+            border: none;
+            color: #ff88d4;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .like-form button:hover {
+            text-decoration: underline;
+        }
+        .like-button {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: #4a006e;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+        .like-button:hover {
+            background-color: #0a0909;
+            color: white;
+            transform: scale(1.05);
+}
+    </style>
+</head>
+<body>
+
+    <h2>🌐 Public Posts</h2>
+    <p class="subtitle">Shared for everyone to read and enjoy!</p>
+    <center></cener><a class="back-link" href="{{ url_for('main.dashboard') }}">Back to Dashboard</a></center>
+    {% for post in posts %}
+        <div class="post-card">
+            <div class="post-title">{{ post.title }}</div>
+            <div class="post-meta">{{ post.author.username }} | {{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</div>
+
+            <div class="post-stats">
+                 {{ post.views }} views &nbsp; | &nbsp;  {{ post.likes }} likes
+            </div>
+
+            {% if post.image %}
+                <img src="{{ url_for('static', filename='uploads/' + post.image) }}" alt="Post Image" class="post-image">
+            {% endif %}
+
+            
+
+            <a class="read-more" href="{{ url_for('blog.post', post_id=post.id) }}">Read More</a>
+
+            <form class="like-form" action="{{ url_for('blog.like_post', post_id=post.id) }}" method="POST">
+                <button type="submit" class="like-button">👍 Like</button>
+            </form>
+        </div>
+    {% endfor %}
+
+</body>
+</html>
+
+
