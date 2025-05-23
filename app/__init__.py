@@ -23,8 +23,8 @@ def create_app():
     
     
     # Google OAuth setup
-    client_id = os.getenv('CLIENT_ID')
-    client_secret = os.getenv('CLIENT_SECRET')
+    GOOGLE_OAUTH_CLIENT_ID = os.getenv('CLIENT_ID')
+    GOOGLE_OAUTH_CLIENT_SECRET = os.getenv('CLIENT_SECRET')
     # Initialize Flask extensions with the app
     db.init_app(app)
     login_manager.init_app(app)
