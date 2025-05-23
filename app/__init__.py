@@ -54,7 +54,7 @@ def create_app():
     )
     
     # Register Google OAuth blueprint
-    app.register_blueprint(google_bp)
+    app.register_blueprint(google_bp, url_prefix="/google")
     
     # Import and register other blueprints
     from .routes.auth import auth as auth_blueprint
