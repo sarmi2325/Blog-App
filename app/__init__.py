@@ -5,6 +5,7 @@ from flask import current_app
 from flask import send_from_directory
 from flask_login import LoginManager
 from flask_dance.contrib.google import make_google_blueprint, google
+from config import Config
 import os
 
 # Initialize Flask extensions
