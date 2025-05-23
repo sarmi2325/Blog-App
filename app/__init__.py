@@ -50,7 +50,7 @@ def create_app():
         "https://www.googleapis.com/auth/userinfo.email",
         "https://www.googleapis.com/auth/userinfo.profile",
     ],
-        redirect_to="auth.google_authorized"  # This is the route to handle Google OAuth callback
+        #redirect_to="auth.google_authorized"  # This is the route to handle Google OAuth callback
     )
     
     # Register Google OAuth blueprint
