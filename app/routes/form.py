@@ -8,7 +8,7 @@ from flask_wtf.file import FileAllowed
 #define post form
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    content = CKEditorField('Content', validators=[DataRequired()])  
+    content = TextAreaField('Content', validators=[DataRequired()])  
     link = StringField('Optional Link', validators=[Optional()])
     is_public = SelectField('Visibility', choices=[('true', 'Public'), ('false', 'Private')], validators=[DataRequired()])
     image = FileField('Upload Image', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])
