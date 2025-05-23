@@ -10,12 +10,10 @@ from app import db
 #create auth blueprint
 auth=Blueprint('auth',__name__)
 
-@auth.route("/google/authorized")
-def google_authorized():
+@auth.route("/login/google")
+def login_google():
     if not google.authorized:
         return redirect(url_for("google.login"))
-
-    # Fetch user info from Google
     resp = google.get("/oauth2/v2/userinfo")
     if not resp.ok:
         flash("Failed to fetch user info from Google.")
@@ -25,30 +23,14 @@ def google_authorized():
     email = user_info.get("email")
     name = user_info.get("name", "GoogleUser")
 
-    if not email:
-        flash("Email not available from Google account.")
-        return redirect(url_for("auth.login"))
-
-    # Check if user already exists
     user = User.query.filter_by(email=email).first()
+    if user is None:
+        dummy_password = secrets.token_urlsafe(16)
+        user = User(username=name, email=email, password=generate_password_hash(dummy_password))
+        db.session.add(user)
+        db.session.commit()
 
-    if user:
-        login_user(user)
-        return redirect(url_for("main.dashboard"))
-
-    # Create new user with a random dummy password
-    dummy_password = secrets.token_urlsafe(16)
-    hashed_password = generate_password_hash(dummy_password)
-
-    new_user = User(
-        username=name,
-        email=email,
-        password=hashed_password
-    )
-    db.session.add(new_user)
-    db.session.commit()
-    login_user(new_user)
-
+    login_user(user)
     return redirect(url_for("main.dashboard"))
 @auth.route('/register',methods=['GET','POST'])
 def register():
