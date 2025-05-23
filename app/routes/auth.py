@@ -12,7 +12,7 @@ auth=Blueprint('auth',__name__)
 @auth.route("/google/authorized")
 def google_authorized():
     if not google.authorized:
-        return redirect(url_for("google.login"))  # If not authorized, redirect to Google login
+        return redirect(url_for("auth.google.login"))  # If not authorized, redirect to Google login
 
     # Get the user's info from Google
     response = google.get("/oauth2/v2/userinfo")
