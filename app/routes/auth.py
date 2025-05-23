@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import login_user,logout_user,current_user,login_required
 from flask_dance.contrib.google import make_google_blueprint, google
 from app.model import User
+import secrets
 from app import db
 
 #create auth blueprint
@@ -12,28 +13,43 @@ auth=Blueprint('auth',__name__)
 @auth.route("/google/authorized")
 def google_authorized():
     if not google.authorized:
-        return redirect(url_for("auth.google.login"))  # If not authorized, redirect to Google login
+        return redirect(url_for("google.login"))
 
-    # Get the user's info from Google
-    response = google.get("/oauth2/v2/userinfo")
-    assert response.ok, response.text
-    user_info = response.json()
+    # Fetch user info from Google
+    resp = google.get("/oauth2/v2/userinfo")
+    if not resp.ok:
+        flash("Failed to fetch user info from Google.")
+        return redirect(url_for("auth.login"))
 
-    # Here you can create a new user in the database or log in the user
-    # For example, if the user already exists, log them in:
-    user = User.query.filter_by(email=user_info["emails"][0]["value"]).first()
+    user_info = resp.json()
+    email = user_info.get("email")
+    name = user_info.get("name", "GoogleUser")
+
+    if not email:
+        flash("Email not available from Google account.")
+        return redirect(url_for("auth.login"))
+
+    # Check if user already exists
+    user = User.query.filter_by(email=email).first()
+
     if user:
         login_user(user)
-        return redirect(url_for('main.dashboard'))  # Redirect to the dashboard or wherever you want
+        return redirect(url_for("main.dashboard"))
 
-    # If the user doesn't exist, create a new user
-    new_user = User(username=user_info['displayName'], email=user_info['emails'][0]['value'])
+    # Create new user with a random dummy password
+    dummy_password = secrets.token_urlsafe(16)
+    hashed_password = generate_password_hash(dummy_password)
+
+    new_user = User(
+        username=name,
+        email=email,
+        password=hashed_password
+    )
     db.session.add(new_user)
     db.session.commit()
     login_user(new_user)
 
-    return redirect(url_for('main.dashboard'))
-
+    return redirect(url_for("main.dashboard"))
 @auth.route('/register',methods=['GET','POST'])
 def register():
     if request.method=='POST':
